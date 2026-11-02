@@ -1,0 +1,32 @@
+{
+  "specsDir": "specs",
+  "gateCommand": "node --test test/",
+  "proofCommand": "node --test {files}",
+  "gateOwners": {
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": []
+  },
+  "bannedText": [
+    "\u2014"
+  ],
+  "bannedTextPaths": [
+    "**"
+  ],
+  "protectedBranches": [
+    "main",
+    "master"
+  ],
+  "highRiskPaths": [
+    "**/auth/**",
+    "**/payments/**",
+    "**/migrations/**",
+    "infra/**",
+    "terraform/**"
+  ],
+  "mcpAllow": [],
+  "retryCap": 3
+}
