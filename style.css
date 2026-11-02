@@ -1,0 +1,7 @@
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; }
+main { max-width: 24rem; margin: 0 auto; }
+label, select, input, output { display: block; width: 100%; box-sizing: border-box; font: inherit; }
+label { margin-top: 1rem; }
+select, input { padding: 0.5rem; }
+output { margin-top: 1.5rem; font-size: 1.5rem; overflow-wrap: anywhere; }
+:focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }

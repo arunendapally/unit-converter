@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="build" content="dev">
+<title>Unit converter</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>Unit converter</h1>
+<label for="category">Category</label>
+<select id="category">
+<option value="length" selected>Length</option>
+<option value="weight">Weight</option>
+<option value="temperature">Temperature</option>
+</select>
+<label for="value">Value</label>
+<input id="value" type="text" inputmode="decimal" autocomplete="off">
+<label for="from">From</label>
+<select id="from">
+<option>mm</option><option>cm</option><option selected>m</option><option>km</option><option>in</option><option>ft</option><option>yd</option><option>mi</option>
+</select>
+<label for="to">To</label>
+<select id="to">
+<option>mm</option><option>cm</option><option>m</option><option>km</option><option>in</option><option selected>ft</option><option>yd</option><option>mi</option>
+</select>
+<output id="result" aria-live="polite">Enter a number</output>
+</main>
+<script type="module" src="src/app.mjs"></script>
+</body>
+</html>

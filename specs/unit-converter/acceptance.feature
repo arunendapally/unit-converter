@@ -143,16 +143,17 @@ Feature: Convert a length, weight or temperature value
 
   @R9 @AC-11 @unit
   Scenario Outline: Plain decimal forms are accepted
-    Given the category "length"
-    When "<value>" is converted from "m" to "m"
+    Given the category "<category>"
+    When "<value>" is converted from "<unit>" to "<unit>"
     Then the result is "<result>"
 
+    # -3.5 is a temperature: a negative length is refused (AC-12). Ruling by the tech lead in Build.
     Examples:
-      | value | result |
-      | 12    | 12     |
-      | -3.5  | -3.5   |
-      | .5    | 0.5    |
-      | 1e3   | 1000   |
+      | category    | unit | value | result |
+      | length      | m    | 12    | 12     |
+      | temperature | C    | -3.5  | -3.5   |
+      | length      | m    | .5    | 0.5    |
+      | length      | m    | 1e3   | 1000   |
 
   @R10 @AC-12 @unit
   Scenario Outline: Negative length and weight are refused
