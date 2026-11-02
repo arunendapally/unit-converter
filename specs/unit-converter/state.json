@@ -9,8 +9,21 @@
       "enteredAt": "2026-11-02T14:20:16.114Z"
     }
   },
-  "gates": {},
+  "gates": {
+    "1": {
+      "status": "waiting",
+      "requestedAt": "2026-11-02T14:26:24.672Z",
+      "fingerprint": "d23ecf528f5c03c3"
+    }
+  },
   "retries": {},
   "kinds": [],
-  "updatedAt": "2026-11-02T14:20:16.115Z"
+  "updatedAt": "2026-11-02T14:26:24.674Z",
+  "intent": {
+    "change": "Convert on one page",
+    "smallest": "Three categories",
+    "dropIf": "Not live",
+    "by": "Arun Endapally",
+    "at": "2026-11-02T14:22:36.014Z"
+  }
 }
