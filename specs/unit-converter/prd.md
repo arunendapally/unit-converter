@@ -163,3 +163,8 @@ All of these can be changed later at low cost; each recommendation is the defaul
 - The change fits one PR under 300 code lines (light lane).
 - The release comes from main on the remote, and the probe reads that main sha from the build meta on the public URL (R15).
 - A rollback to the previous main commit has been rehearsed once (A14), or, for the first release, removing the Pages deployment has been shown to work.
+
+## Changes since v1
+
+- AC-11 in acceptance.feature: the example "-3.5" was a length, which AC-12 refuses as negative. It now runs as a temperature (C to C), and the outline gained category and unit columns. Found by the QA engineer in Build; ruling by the tech lead. No requirement changed.
+

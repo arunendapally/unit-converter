@@ -1,6 +1,6 @@
 {
   "specsDir": "specs",
-  "gateCommand": "node --test test/",
+  "gateCommand": "node --test test/*.test.mjs",
   "proofCommand": "node --test {files}",
   "gateOwners": {
     "1": [],
