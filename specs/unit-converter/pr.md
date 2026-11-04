@@ -16,7 +16,7 @@ Removed, skipped or quarantined: none.
 
 Risk: medium, because it changes code (a static page and a pure conversion module) and touches no high-risk path
 Open findings: 0 (nits left open: F8, F10, F12; F13 wontfix)
-Look here first: src/app.mjs:24 (units are refilled on pageshow after Back: is resetting the restored unit choice to the category defaults acceptable?), src/convert.mjs:20 (F13: a new refusal, "Choose units from the same category", kept as an internal guard and not added to the spec: agree?), src/convert.mjs:37 (F8: results from 1e6 to 1e15 show padding zeros such as 328084000000000; needs a product ruling)
+Look here first: src/app.mjs:26 (units are refilled on pageshow after Back: is resetting the restored unit choice to the category defaults acceptable?), src/convert.mjs:20 (F13: a new refusal, "Choose units from the same category", kept as an internal guard and not added to the spec: agree?), src/convert.mjs:37 (F8: results from 1e6 to 1e15 show padding zeros such as 328084000000000; needs a product ruling)
 Lenses run: correctness, simplicity, tests
 Revert: git revert of the merge commit; nothing is deployed yet and there is no data to back out
 Checked mechanically: 8 mutations (1e15 bound, absolute zero, negative check, 6-digit precision, stone factor, kelvin offset, Fahrenheit offset, survey mile) each caught by the suite; convert() edge cases "-0", "1.", "+5", "1e400"; no new dependencies; no storage or network APIs
