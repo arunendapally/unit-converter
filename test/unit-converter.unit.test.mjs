@@ -9,7 +9,8 @@
 //   export function convert(category, input, from, to)
 //     input is the raw string from the text box.
 //     Returns { result: '<string>' } on success or { message: '<exact message>' } on refusal, never both.
-//     result = String(Number(x.toPrecision(6))), so 1e15 gives "1e+15" and 1 mg in st gives "1.57473e-7".
+//     result = String(Number(x.toPrecision(6))), except from 1e15 up it is in exponent form ("1e+15"),
+//     which String() does not give on its own; 1 mg in st gives "1.57473e-7".
 //     Messages: "Enter a number", "Enter a valid number", "Length and weight cannot be negative",
 //               "Below absolute zero", "Number too large".
 //
@@ -157,4 +158,27 @@ test('AC-19 The conversion module runs in Node with no browser', () => {
     weight: ['mg', 'g', 'kg', 'oz', 'lb', 'st'],
     temperature: ['C', 'F', 'K'],
   });
+});
+
+test('AC-4 Units outside the category are refused, never converted or thrown', async (t) => {
+  // Review F4: the page is the only thing keeping units in their category; the module must refuse on its own.
+  const rows = [
+    ['length', '1', 'C', 'm'],
+    ['length', '1', 'kg', 'm'],
+    ['temperature', '5', 'm', 'ft'],
+    ['volume', '1', 'l', 'ml'],
+  ];
+  for (const [c, v, f, to] of rows) await refused(t, c, v, f, to, 'Choose units from the same category');
+});
+
+test('AC-8 Small temperatures keep their 6 significant digits', async (t) => {
+  // Review F5: rounding kelvin to 9 decimals lost the digits of small results.
+  await ok(t, 'temperature', '0.00000001234', 'C', 'C', '1.234e-8');
+  await ok(t, 'temperature', '0.0000000001234', 'C', 'C', '1.234e-10');
+});
+
+test('AC-14 A temperature a hair below absolute zero is refused', async (t) => {
+  // Review F5: the old rounding let inputs up to 5e-10 K below absolute zero through.
+  await refused(t, 'temperature', '-0.0000000004', 'K', 'K', 'Below absolute zero');
+  await refused(t, 'temperature', '-459.6700000001', 'F', 'C', 'Below absolute zero');
 });

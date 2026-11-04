@@ -12,9 +12,12 @@ const FACTORS = {
 };
 const TO_C = { C: (x) => x, F: (x) => ((x - 32) * 5) / 9, K: (x) => x - 273.15 };
 const FROM_C = { C: (c) => c, F: (c) => (c * 9) / 5 + 32, K: (c) => c + 273.15 };
+const ZERO = { C: -273.15, F: -459.67, K: 0 }; // absolute zero in each temperature unit
 const NUMBER = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
 
 export function convert(category, input, from, to) {
+  const units = UNITS[category];
+  if (!units || !units.includes(from) || !units.includes(to)) return { message: 'Choose units from the same category' };
   const text = input.trim();
   if (text === '') return { message: 'Enter a number' };
   if (!NUMBER.test(text)) return { message: 'Enter a valid number' };
@@ -22,10 +25,9 @@ export function convert(category, input, from, to) {
   if (Math.abs(x) > 1e15) return { message: 'Number too large' };
   let out;
   if (category === 'temperature') {
-    // Rounding kelvin to 9 places absorbs float error so exact absolute zero is allowed.
-    const k = Number((TO_C[from](x) + 273.15).toFixed(9));
-    if (k < 0) return { message: 'Below absolute zero' };
-    out = FROM_C[to](k - 273.15);
+    // Compared in the input's own unit, so exact absolute zero is allowed and nothing below it.
+    if (x < ZERO[from]) return { message: 'Below absolute zero' };
+    out = from === to ? x : FROM_C[to](TO_C[from](x));
   } else {
     if (x < 0) return { message: 'Length and weight cannot be negative' };
     out = (x * FACTORS[from]) / FACTORS[to];
