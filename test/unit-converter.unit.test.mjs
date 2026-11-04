@@ -1,4 +1,4 @@
-// Feature unit-converter, task T1: tests for src/convert.mjs (AC-4 to AC-6, AC-8 to AC-17, AC-19).
+// Feature unit-converter, task T1: tests for src/convert.mjs (AC-4 to AC-6, AC-8 to AC-17; the no-browser constraint).
 //
 // Contract for the builder:
 //   export const UNITS = {
@@ -147,7 +147,7 @@ test('AC-17 An input of exactly 1e15 is accepted', () => {
   assert.equal('message' in r, false);
 });
 
-test('AC-19 The conversion module runs in Node with no browser', () => {
+test('Constraint: the conversion module runs in Node with no browser', () => {
   assert.equal(typeof globalThis.window, 'undefined');
   assert.equal(typeof globalThis.document, 'undefined');
   assert.equal(typeof convert, 'function');

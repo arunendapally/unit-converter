@@ -1,5 +1,5 @@
 // Feature unit-converter, task T2: structure checks on the page files, read as text (no DOM library).
-// AC-1, AC-2, AC-3, AC-20, AC-22, AC-24, AC-26, AC-27, AC-28.
+// AC-1, AC-2, AC-3, AC-22, AC-24, AC-26, AC-27, AC-28.
 //
 // Contract for the builder:
 //   index.html has <html lang="en">, a non-empty <title>, <select id="category"> with options
@@ -80,7 +80,7 @@ test('AC-3 The page opens on Length from m to ft with an empty input', () => {
   assert.match(html, /<meta\s+name="build"\s+content="dev"\s*\/?>/i);
 });
 
-test('AC-20 The page calls the same exported function the tests call', () => {
+test('Constraint: the page calls the same exported function the tests call', () => {
   assert.ok(importsFromConvert(read('src/app.mjs'), 'convert'));
   assert.match(read('index.html'), /<script\s+type="module"\s+src="src\/app\.mjs"\s*><\/script>/i);
 });

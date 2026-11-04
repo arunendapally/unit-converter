@@ -1,9 +1,10 @@
 # Stage 1 Plan, written with the PRD. Every acceptance criterion, as executable Gherkin.
 # Test levels for this product (no dependencies, Node built-in node:test only, no browser in the gate):
-#   @unit       against the ES module src/convert.mjs (conversion logic and every refusal message).
-#   @subsystem  Node reads index.html and the page files as text and checks their structure.
-#   @e2e        needs a real browser or the live site. R6, R13, R17, R19 are checked by hand in a
-#               browser in Verify. R15 and R22 run after release against the public URL.
+#   @unit       the conversion logic on its own, with no browser (every result and refusal message).
+#   @subsystem  the page as delivered, checked without a browser.
+#   @e2e        a real browser or the live site. R6, R13, R17, R19 in a browser in Verify; R15 and R22
+#               against the public address after release.
+# Scenarios describe what the visitor sees and can rely on; how it is checked lives in the tests.
 
 Feature: Convert a length, weight or temperature value
   As a visitor with a number in one unit
@@ -12,15 +13,15 @@ Feature: Convert a length, weight or temperature value
 
   @R1 @AC-1 @subsystem
   Scenario: The page offers exactly three categories
-    Given the page source in index.html
-    When the category control is read
+    Given the page is open
+    When the visitor opens the category choice
     Then it offers exactly "Length", "Weight" and "Temperature"
 
-  @R1 @AC-2 @subsystem
-  Scenario Outline: Each category limits both unit lists to its own units
-    Given the page source in index.html
-    When the units defined for the "<category>" category are read
-    Then both the from list and the to list are exactly "<units>"
+  @R23 @AC-2 @subsystem
+  Scenario Outline: Each category limits both unit choices to its own units
+    Given the page is open
+    When the visitor chooses the "<category>" category
+    Then both the from and the to unit choices offer exactly "<units>"
 
     Examples:
       | category    | units                      |
@@ -30,12 +31,12 @@ Feature: Convert a length, weight or temperature value
 
   @R2 @AC-3 @subsystem
   Scenario: The page opens on Length from m to ft with an empty input
-    Given the page source in index.html
-    When the initial state is read
+    Given a visitor who has not used the page before
+    When the page opens
     Then Length is selected, the from unit is "m" and the to unit is "ft"
     And the input is empty
     And the message area says "Enter a number"
-    And no result number is present
+    And no result number is shown
 
   @R3 @AC-4 @unit
   Scenario Outline: Length converts between units using the international definitions
@@ -235,34 +236,21 @@ Feature: Convert a length, weight or temperature value
     Then the earlier result is gone at the same moment the message appears
     And no result number is visible beside the message
 
-  @R14 @AC-19 @unit
-  Scenario: The conversion module runs in Node with no browser
-    Given src/convert.mjs is imported in Node with no DOM or window
-    When the exported conversion function is called with a valid and an invalid input
-    Then it returns the result for the valid input and the refusal message for the invalid one
-
-  @R14 @AC-20 @unit
-  Scenario: The page calls the same exported function the tests call
-    Given the page script in the page files
-    When its imports are read as text
-    Then it imports the conversion function from the same src/convert.mjs module
-
-  # Runs after release against the public URL.
+  # Runs after release against the public address.
   @R15 @AC-21 @e2e
-  Scenario: The live page responds and carries the deployed commit sha
-    Given the workflow has deployed the latest main commit
-    When the public URL "https://arunendapally.github.io/unit-converter/" is requested
-    Then the response is HTTP 200
-    And the page contains a build meta whose content equals the deployed main sha
+  Scenario: A visitor gets the latest released version
+    Given a new version of the page has been released
+    When a visitor opens "https://arunendapally.github.io/unit-converter/"
+    Then the page opens
+    And it is the version that was released
 
   @R16 @AC-22 @subsystem
-  Scenario: Every control is native and labelled, and the page declares language and title
-    Given the page source in index.html
-    When the controls, labels and head are read
-    Then the category, from unit, to unit and value controls are native select and input elements
-    And each has a visible label whose "for" matches its id
-    And the html element declares a lang attribute
-    And the page has a non-empty title
+  Scenario: Every choice and the value are labelled, and the page states its language and title
+    Given the page is open with assistive technology
+    When the visitor moves to the category, the from unit, the to unit and the value
+    Then each is announced with its visible label
+    And the page states its language
+    And the page has a title
 
   # Checked by hand in a real browser in Verify (no browser in the gate).
   @R17 @AC-23 @e2e
@@ -273,10 +261,11 @@ Feature: Convert a length, weight or temperature value
     And each control shows a visible focus indicator
 
   @R18 @AC-24 @subsystem
-  Scenario: The result and messages sit in a polite live region
-    Given the page source in index.html
-    When the element holding the result and messages is read
-    Then it has aria-live "polite"
+  Scenario: A screen reader announces each result and message without moving the visitor
+    Given the page is open with a screen reader
+    When the result or the message changes
+    Then the screen reader announces it
+    And the visitor's place on the page does not move
 
   # Checked by hand in a real browser in Verify (no browser in the gate).
   @R19 @AC-25 @e2e
@@ -287,43 +276,39 @@ Feature: Convert a length, weight or temperature value
     And the page does not scroll horizontally
 
   @R20 @AC-26 @subsystem
-  Scenario: The page references only same-origin files
-    Given the page files as text
-    When every src, href and import reference is read
-    Then none points to another origin
-    And there is no http:// or https:// URL used to load anything
+  Scenario: Nothing on the page comes from another site
+    Given the page is open
+    When it has finished loading
+    Then everything it shows and runs came from the page's own address
 
   @R20 @AC-27 @subsystem
-  Scenario Outline: The page source never uses storage or network APIs
-    Given the page files as text
-    When the source is searched for "<api>"
-    Then it is not found
+  Scenario Outline: The page never keeps or sends anything about the visitor
+    Given the page is open
+    When the visitor "<does>"
+    Then nothing about the visitor is kept in the browser
+    And nothing is sent anywhere
 
     Examples:
-      | api            |
-      | document.cookie |
-      | localStorage   |
-      | sessionStorage |
-      | indexedDB      |
-      | fetch(         |
-      | XMLHttpRequest |
-      | sendBeacon     |
+      | does                  |
+      | opens the page        |
+      | converts a value      |
+      | changes the category  |
 
   @R21 @AC-28 @subsystem
-  Scenario: The whole page is under 50 KB
-    Given the HTML, CSS and JavaScript files of the page
-    When their uncompressed sizes are added
+  Scenario: The whole page weighs under 50 KB
+    Given everything the page needs to work
+    When it is added up uncompressed
     Then the total is under 50 KB
 
-  # Runs after release against the public URL.
+  # Runs after release against the public address.
   @R22 @AC-29 @e2e
-  Scenario Outline: The scheduled probe fails visibly when the page is unhealthy
-    Given the probe workflow runs at least daily
+  Scenario Outline: The owner hears within a day when the page is unhealthy
+    Given the page is checked at least once a day
     When the public page is "<state>"
-    Then the probe run fails so the owner is emailed
+    Then the owner is told that day
 
     Examples:
-      | state                  |
-      | down                   |
-      | missing the build meta |
-      | showing a wrong sha    |
+      | state                      |
+      | down                       |
+      | not the converter          |
+      | an older version           |

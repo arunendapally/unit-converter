@@ -16,80 +16,67 @@
 
 ## Problem
 
-<!-- Who has the problem, how often, and what it costs them today. -->
-
-People who need a quick length, weight or temperature conversion today use a search engine widget or an ad-heavy converter site, or do the arithmetic by hand and get it wrong (temperature offsets are the classic error). There is no page of ours that does this at all: today nothing is live. The cost is small per use but frequent, and the page is also the first real product run through the ai-sdlc v0.6.0 plugin, so a page that never goes live fails both purposes.
+People who need a quick length, weight or temperature conversion use a search engine widget, an ad-heavy converter site, or do the arithmetic by hand and get it wrong; temperature offsets are the classic slip. How often this happens to our visitors is not known: nothing of ours is live, so there is no baseline (A16).
 
 ## Users and jobs
 
-<!-- Each user type and the job they hire this feature to do. -->
-
-- Anyone on the public web with a number in one unit: "tell me this value in another unit of the same kind, right now, without signing up, installing or reading ads."
-- Arun Endapally, owner and product lead: "prove the ai-sdlc plugin can take a small real product from intent to a live, probed release."
+- Visitor with a number in one unit: when I have a length, weight or temperature in one unit, I want it in another unit of the same kind at once, so I can carry on without signing up, installing anything or reading ads.
 
 ## Questions asked
 
-<!-- Before drafting, ask the person who asked for this the questions whose answers would change the
-     PRD. One per line: "- Q1: <question> A: <answer> (who answered)". If they could not answer, write
-     "- Q2: <question> unanswered" and carry it as an assumption. Do not guess silently. -->
+None asked, because Arun Endapally was not reachable from the planning session and no open choice is irreversible or conflicts with the repo docs. Each choice is an unconfirmed assumption below and listed in Open questions.
 
-None asked, because Arun Endapally was not reachable from this planning session and no open choice is irreversible or conflicts with the repo docs. Every question that would have been asked is carried as an unconfirmed assumption below and listed in Open questions.
+## Constraints
+
+Choices a person made before the requirements; the design follows them, and no requirement repeats them.
+
+- Plain HTML, CSS and JavaScript with no build step and no runtime dependencies; the conversion logic can be checked without a browser. (Arun Endapally, feature brief)
+- Published on GitHub Pages from the public repo arunendapally/unit-converter. (Arun Endapally, feature brief)
+- Owner and product lead: Arun Endapally. (feature brief)
 
 ## Assumptions
 
-<!-- What this PRD takes as true without proof yet: "- A1: <assumption> [confirmed]" (by a person or a
-     fact in facts.md) or "[unconfirmed]". Every unconfirmed assumption appears in Open questions. -->
-
 - A1: The product is one public web page converting within three categories: length, weight, temperature. [confirmed: Arun Endapally, feature brief]
-- A2: Plain HTML, CSS and JavaScript, no build step, no runtime dependencies; the conversion logic is an ES module the page imports and Node tests (node:test) import directly, so unit tests need no browser. [confirmed: Arun Endapally, feature brief]
-- A3: Deployed to GitHub Pages from the public repo arunendapally/unit-converter by a GitHub Actions workflow that writes the commit sha into `<meta name="build" content="<sha>">`. [confirmed: Arun Endapally, feature brief]
-- A4: Owner and product lead is Arun Endapally. [confirmed: Arun Endapally, feature brief]
 - A5: Units offered are length: mm, cm, m, km, in, ft, yd, mi; weight: mg, g, kg, oz, lb, st; temperature: C, F, K. [unconfirmed]
 - A6: Imperial units use the international definitions (1 in = 25.4 mm, 1 ft = 0.3048 m, 1 yd = 0.9144 m, 1 mi = 1609.344 m, 1 lb = 0.45359237 kg, 1 oz = 1/16 lb, 1 st = 14 lb). [unconfirmed]
-- A7: Results update live as the person types or changes a selection; there is no Convert button. [unconfirmed]
+- A7: Results update as the visitor types or changes a choice; there is no Convert button. [unconfirmed]
 - A8: Results are rounded to 6 significant digits with trailing zeros removed. [unconfirmed]
-- A9: Only a dot is a decimal separator; "1,5" is rejected as invalid rather than read as 1.5. [unconfirmed]
-- A10: Negative length and weight are rejected; zero is allowed. Temperatures below absolute zero are rejected; absolute zero itself is allowed. [unconfirmed]
-- A11: Inputs with an absolute value above 1e15 are rejected as too large, because results past that size stop being meaningful at 6 significant digits of the input's precision. [unconfirmed]
-- A12: The live URL is https://arunendapally.github.io/unit-converter/ (the GitHub Pages default for this repo). [unconfirmed]
-- A13: The page opens on Length, from m to ft, with an empty input. [unconfirmed]
-- A14: Constitution 5 (Reversible) is met for a static page by redeploying the previous main commit through the same workflow, rehearsed once before release, rather than by a feature flag. [unconfirmed]
-- A15: Constitution 6 (Observable) is met by a scheduled probe that checks the live page and its build meta, with GitHub's failed-workflow email to the owner as the alert and a short runbook; SLO 99% of daily probes pass over 30 days. [unconfirmed]
-- A16: The page collects nothing about its visitors: no analytics, no cookies, no storage. So the outcome metric is measured by the probe, not by usage. [unconfirmed]
-- A17: The objective this serves is proving the ai-sdlc v0.6.0 plugin end to end on a real public product. [unconfirmed]
+- A9: Only a dot is a decimal separator; "1,5" is refused rather than read as 1.5. [unconfirmed]
+- A10: Negative length and weight are refused; zero is allowed. Temperatures below absolute zero are refused; absolute zero itself is allowed. [unconfirmed]
+- A11: Values above 1e15 in size are refused as too large. [unconfirmed]
+- A12: The public address is https://arunendapally.github.io/unit-converter/. [unconfirmed]
+- A13: The page opens on Length, from m to ft, with an empty value. [unconfirmed]
+- A14: A bad release is undone by putting the previous version back, rehearsed once before the first release. [unconfirmed]
+- A15: Hearing within a day that the page is down or out of date is soon enough for a free utility. [unconfirmed]
+- A16: The page collects nothing about its visitors, so how much it is used cannot be measured. [unconfirmed]
+- A17: The objective is proving the ai-sdlc plugin end to end on a real public product. [unconfirmed]
 
 ## Requirements
 
-<!-- Numbered R1, R2, ... One behaviour each, testable, with the data it needs. Priority: must, should, could. -->
-
-- R1. (must) The page offers exactly three categories, Length, Weight and Temperature, and choosing one limits both unit lists to that category's units (A5). Data needed: category and unit lists.
-- R2. (must) On first load the page shows Length selected, from m to ft, an empty input and the empty-input message, with no result number (A13). Data needed: default category and units.
-- R3. (must) Length converts between any two of mm, cm, m, km, in, ft, yd, mi using the factors in A6; for example 1 mi is 1.60934 km and 1 ft is 30.48 cm. Data needed: length factors to metres.
-- R4. (must) Weight converts between any two of mg, g, kg, oz, lb, st using the factors in A6; for example 1 kg is 2.20462 lb and 1 st is 6.35029 kg. Data needed: weight factors to kilograms.
-- R5. (must) Temperature converts between any two of C, F, K using F = C x 9/5 + 32 and K = C + 273.15; for example 100 C is 212 F, 0 C is 273.15 K and -40 F is -40 C. Data needed: the two formulas.
-- R6. (must) The result updates on every change to the input, the from unit, the to unit or the category, with no button press (A7). Data needed: none beyond the current inputs.
-- R7. (must) The result is shown rounded to 6 significant digits with trailing zeros removed, for example 1 in to mm shows 25.4, not 25.4000 (A8). Data needed: none.
-- R8. (must) An empty or whitespace-only input shows the message "Enter a number" and no result number. Data needed: none.
-- R9. (must) An input that is not a finite decimal number (for example "abc", "12abc", "1,5", "Infinity") shows the message "Enter a valid number" and no result number; plain forms such as "12", "-3.5", ".5" and "1e3" are accepted (A9). Data needed: none.
-- R10. (must) A negative length or weight shows the message "Length and weight cannot be negative" and no result number; zero converts to 0 (A10). Data needed: category of the input.
-- R11. (must) A temperature below absolute zero (below 0 K, -273.15 C or -459.67 F) shows the message "Below absolute zero" and no result number; exactly absolute zero converts (A10). Data needed: absolute zero in each temperature unit.
-- R12. (must) An input whose absolute value is above 1e15 shows the message "Number too large" and no result number (A11). Data needed: the 1e15 limit.
-- R13. (must) When an input becomes invalid, any earlier result is removed at the same moment the message appears, so a stale number is never shown beside a message. Data needed: none.
-- R14. (must) The conversion module, imported directly in Node with no browser, returns the same results and the same refusals as the page for R3 to R12. Data needed: the module's exported conversion function.
-- R15. (must) The live page at the public URL (A12) responds with HTTP 200 and contains `<meta name="build" content="<sha>">` whose sha equals the main commit the workflow deployed. Data needed: the deployed commit sha, written by the workflow.
-- R16. (must) Every control is a native form control with a visible `<label for>` tied to its id, and the page declares its language and a title. Data needed: none.
-- R17. (must) A keyboard-only user can choose a category, both units and type a value, and reach the result, with a visible focus indicator on each control. Data needed: none.
-- R18. (must) The result and every message are in a polite live region, so a screen reader announces each change without moving focus. Data needed: none.
-- R19. (must) At a 320 CSS pixel wide viewport the whole page is usable with no horizontal scrolling. Data needed: none.
-- R20. (must) The page loads only its own same-origin HTML, CSS and JavaScript, sends no request after load, and writes no cookie, local storage or session storage. Data needed: none.
-- R21. (must) The whole page (HTML, CSS and JavaScript, uncompressed) is under 50 KB. Data needed: none.
-- R22. (should) A scheduled probe checks R15 at least daily and fails visibly to the owner when the page is down or the build meta is missing (A15). Data needed: the public URL and the expected sha.
+- R1. (must) The visitor can choose one of exactly three categories: Length, Weight and Temperature (A1). Needs: nothing new.
+- R23. (must) Once a category is chosen, both unit choices offer only that category's units (A5). Needs: the units of each category.
+- R2. (must) On first visit the page shows Length, from m to ft, an empty value and the "Enter a number" message, with no result number (A13). Needs: nothing new.
+- R3. (must) Length converts between any two of mm, cm, m, km, in, ft, yd, mi using the definitions in A6; for example 1 mi is 1.60934 km and 1 ft is 30.48 cm. Needs: the length definitions.
+- R4. (must) Weight converts between any two of mg, g, kg, oz, lb, st using the definitions in A6; for example 1 kg is 2.20462 lb and 1 st is 6.35029 kg. Needs: the weight definitions.
+- R5. (must) Temperature converts between any two of C, F, K; for example 100 C is 212 F, 0 C is 273.15 K and -40 F is -40 C. Needs: the temperature scales.
+- R6. (must) The result follows every change to the value, either unit or the category, with no button to press (A7). Needs: nothing new.
+- R7. (must) The result shows at most 6 significant digits, with trailing zeros removed: 1 in in mm shows 25.4, not 25.4000 (A8). Needs: nothing new.
+- R8. (must) An empty value shows "Enter a number" and no result number. Needs: nothing new.
+- R9. (must) A value that is not a plain decimal number ("abc", "12abc", "1,5", "Infinity") shows "Enter a valid number" and no result number; "12", "-3.5", ".5" and "1e3" are accepted (A9). Needs: nothing new.
+- R10. (must) A negative length or weight shows "Length and weight cannot be negative" and no result number; zero converts to 0 (A10). Needs: nothing new.
+- R11. (must) A temperature below absolute zero (0 K, -273.15 C, -459.67 F) shows "Below absolute zero" and no result number; absolute zero itself converts (A10). Needs: absolute zero on each scale.
+- R12. (must) A value above 1e15 in size shows "Number too large" and no result number (A11). Needs: nothing new.
+- R13. (must) When the value turns invalid, the earlier result disappears at the moment the message appears; a stale number is never shown beside a message. Needs: nothing new.
+- R15. (must) A visitor at the public address (A12) always gets the latest released version of the page. Needs: which version was released last.
+- R16. (must) Every choice and the value have a visible label that assistive technology reads with them, and the page states its language and title. Needs: nothing new.
+- R17. (must) A keyboard-only visitor can choose a category and both units, type a value and reach the result, and can always see where they are. Needs: nothing new.
+- R18. (must) A screen reader announces each new result or message without moving the visitor's place on the page. Needs: nothing new.
+- R19. (must) On a screen 320 CSS pixels wide the whole page is usable without scrolling sideways. Needs: nothing new.
+- R20. (must) The page never collects, keeps or sends anything about the visitor, and nothing on it comes from another site (A16). Needs: nothing.
+- R21. (must) The whole page weighs under 50 KB, so it opens quickly on a slow mobile connection. Needs: nothing new.
+- R22. (should) If the public page stops working or serves an old version, the owner hears about it within a day (A15). Needs: which version was released last.
 
 ## Non-functional requirements
-
-<!-- How fast, safe, usable and bounded it must be. One line each: the requirement above that states it
-     (so acceptance.feature tests it), or "None, because ...". A security and privacy need that touches
-     auth, payments or personal data needs the full lane. -->
 
 - Performance: R21
 - Security and privacy: R20
@@ -98,73 +85,42 @@ None asked, because Arun Endapally was not reachable from this planning session 
 
 ## Never
 
-<!-- What the product must never claim or do: overclaims, dark patterns, risky defaults. -->
-
-- Never show a number for empty, invalid, negative (length, weight), below-absolute-zero or too-large input (Constitution 1).
-- Never leave a stale result on screen beside an error message (R13).
-- Never show more digits than the 6 significant digits it rounds to, or claim to be a certified or official measurement tool.
-- Never collect, store or send anything about the visitor: no analytics, no cookies, no third-party scripts, fonts or ads.
-- Never call the page live unless the probe reads the deployed sha from the build meta on the public URL.
+- Never show a number for an empty, invalid, negative (length, weight), below-absolute-zero or too-large value (Constitution 1).
+- Never leave a stale result beside a message (R13).
+- Never claim to be a certified or official measurement tool.
+- Never collect, keep or send anything about the visitor: no analytics, no tracking, no ads.
 
 ## Out of scope
 
 - Any category beyond length, weight and temperature (volume, area, speed, currency and so on).
-- A swap-units button, conversion history, favourites, sharing links or URL state.
-- Localised number formats (comma decimals, thousands separators) and translation of the page.
-- Showing every unit at once; the page converts one value from one unit to one other unit.
-- Offline or installable app behaviour, analytics, accounts of any kind.
-- A custom domain.
+- Swapping units, history, favourites, sharing a conversion.
+- Comma decimals, thousands separators and translation.
+- Showing every unit at once; offline or installable use; accounts; a custom address.
 
 ## Outcome metric
 
-<!-- One measurable outcome, its target and its baseline today, or "None, because ...". After release its
-     owner reads it (14 days in the full lane, 7 in the light lane). Then the objective it serves, so
-     features roll up to an OKR:
-Objective: <the objective or OKR key result this moves, or None> -->
+Metric: None, because the page collects nothing about its visitors (R20, A16), so whether people use it or are better off cannot be measured. Whether it stays live and current is checked after release (R22).
 
-Share of daily probes over the 7 days after release that find the public page responding with HTTP 200 and a build meta sha equal to the latest main commit. Baseline today: 0% (no page is live). Target: 100% (7 of 7). Owner: Arun Endapally reads it 7 days after release. Measured by the probe, not by visitor data (A16).
-
-Objective: Prove the ai-sdlc v0.6.0 plugin end to end on a real public product (A17).
+Objective: prove the ai-sdlc plugin end to end on a real public product (A17).
 
 ## Open questions
 
-<!-- Each with a recommendation, and who can answer it. -->
+All have a low-cost default; Arun Endapally confirms each.
 
-All of these can be changed later at low cost; each recommendation is the default this PRD already uses.
-
-- A5: Are these the right units for each category? Recommendation: keep them, they cover everyday metric and imperial use. Who can confirm: Arun Endapally.
-- A6: Use the international definitions for imperial units (not US survey miles)? Recommendation: yes. Who can confirm: Arun Endapally.
-- A7: Live results with no Convert button? Recommendation: yes. Who can confirm: Arun Endapally.
-- A8: Round to 6 significant digits, trailing zeros removed? Recommendation: yes. Who can confirm: Arun Endapally.
-- A9: Reject comma decimals rather than read them as dots? Recommendation: reject, it is never ambiguous. Who can confirm: Arun Endapally.
-- A10: Reject negative length and weight and below-absolute-zero temperatures, allow zero and absolute zero? Recommendation: yes. Who can confirm: Arun Endapally.
-- A11: Cap input at an absolute value of 1e15? Recommendation: yes. Who can confirm: Arun Endapally.
-- A12: Is the live URL the GitHub Pages default https://arunendapally.github.io/unit-converter/? Recommendation: yes, no custom domain now. Who can confirm: Arun Endapally.
-- A13: Open on Length, m to ft, empty input? Recommendation: yes. Who can confirm: Arun Endapally.
-- A14: Is redeploying the previous main commit, rehearsed once, an acceptable reading of Constitution 5 instead of a flag? Recommendation: yes for a static page. Who can confirm: Arun Endapally.
-- A15: Is a daily probe with GitHub's failed-workflow email, a short runbook and a 99% SLO an acceptable reading of Constitution 6? Recommendation: yes, and keep R22 as should so it can follow in a second PR if the size limit is tight. Who can confirm: Arun Endapally.
-- A16: Confirm the page collects nothing about visitors, so usage is not measured. Recommendation: yes. Who can confirm: Arun Endapally.
-- A17: Is the objective proving the ai-sdlc plugin end to end, or is there a product OKR this rolls up to? Recommendation: the plugin objective. Who can confirm: Arun Endapally.
-
-## Stakeholders
-
-- Arun Endapally: owner and product lead; approves every gate and the release.
-- Public visitors: users of the page; not consulted.
-
-## Dependencies
-
-- GitHub Pages enabled for the public repo arunendapally/unit-converter.
-- A GitHub Actions workflow that deploys main to Pages and writes the commit sha into the build meta.
-- Node with the built-in node:test runner for unit tests; no other dependency.
-
-## Release criteria
-
-- Every must requirement's scenarios in acceptance.feature pass.
-- The change fits one PR under 300 code lines (light lane).
-- The release comes from main on the remote, and the probe reads that main sha from the build meta on the public URL (R15).
-- A rollback to the previous main commit has been rehearsed once (A14), or, for the first release, removing the Pages deployment has been shown to work.
+- A5, A6: units and definitions. Recommend: as listed, international definitions.
+- A7, A8, A9: live update, 6 significant digits, dot decimals only. Recommend: as listed.
+- A10, A11: refuse negatives, below absolute zero and values above 1e15. Recommend: as listed.
+- A12, A13: public address and opening state. Recommend: as listed.
+- A14, A15: undo by putting the previous version back; hear about an outage within a day. Recommend: yes.
+- A16, A17: collect nothing, and the objective is proving the plugin. Recommend: yes.
+- Results from 1e6 up to 1e15 show padding zeros (1e14 m in ft shows 328084000000000), while R7 allows 6 significant digits (review F8). Recommend: show exponent form from 1e6 up, in a later change.
 
 ## Changes since v1
 
 - AC-11 in acceptance.feature: the example "-3.5" was a length, which AC-12 refuses as negative. It now runs as a temperature (C to C), and the outline gained category and unit columns. Found by the QA engineer in Build; ruling by the tech lead. No requirement changed.
 
+## Changes since v2
+
+- Requirements now state needs, not solutions (Arun Endapally, Verify, 2026-11-04): R15, R16, R18, R20 and R22 no longer name a meta tag, a commit, a workflow, markup or browser storage; the conversion module that ran in Node (R14) is a constraint, not a requirement, and its scenarios AC-19 and AC-20 are gone; R1 is split into R1 and R23.
+- New "## Constraints" holds the brief's build and hosting choices (were A2, A3, A4). Removed: the plugin owner as a user, Stakeholders, Dependencies and Release criteria, which repeated the brief or the gate. The outcome metric was uptime; it is now none, because nothing about visitors is collected.
+- No behaviour changes, and no code changes.
