@@ -36,7 +36,7 @@
   },
   "retries": {},
   "kinds": [],
-  "updatedAt": "2026-11-04T09:53:24.662Z",
+  "updatedAt": "2026-11-04T09:56:08.541Z",
   "intent": {
     "change": "Convert on one page",
     "smallest": "Three categories",
@@ -56,12 +56,12 @@
     },
     "5": {
       "ok": true,
-      "count": 106,
-      "at": "2026-11-04T09:52:13.059Z",
+      "count": 110,
+      "at": "2026-11-04T09:55:36.473Z",
       "runs": 1
     }
   },
-  "baseline": 106,
+  "baseline": 110,
   "proofBase": "2bd0536744d522ed14ad4e7af02555439e058ea4",
   "sizeChecked": 95,
   "proof": {
@@ -72,7 +72,7 @@
       "test/unit-converter.page.test.mjs": "793ac55409ed1f3b",
       "test/unit-converter.unit.test.mjs": "52f453f068f905ba",
       "test/e2e/unit-converter.e2e.cjs": "26dacf170bcd3e2d",
-      "test/unit-converter.probe.test.mjs": "f39acf69d0f53c05"
+      "test/unit-converter.probe.test.mjs": "359c7401e6f3ea2d"
     },
     "acs": [
       "AC-1",
@@ -106,7 +106,7 @@
       "AC-29"
     ],
     "perTest": false,
-    "at": "2026-11-04T09:53:24.651Z"
+    "at": "2026-11-04T09:56:08.528Z"
   },
   "lastPacketHead": "3ce6c63",
   "ledgerIds": [
