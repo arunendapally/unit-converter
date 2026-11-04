@@ -4,6 +4,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { probe } from '../scripts/probe.mjs';
 
 const serve = (status, body) => new Promise((resolve) => {
@@ -38,6 +40,29 @@ test('AC-29 The scheduled probe fails visibly when the page is unhealthy', async
       } finally { server.close(); }
     });
   }
+  for (const [state, expected] of [['checked with no sha', ''], ['matching only a prefix', '39d'], ['longer than the live sha', '39d7b3e999']]) {
+    await t.test(state, async () => {
+      const server = await serve(200, page('39d7b3e'));
+      try {
+        assert.equal((await probe(at(server), expected)).ok, false);
+      } finally { server.close(); }
+    });
+  }
+  await t.test('run as a command, exits 1', async () => {
+    const server = await serve(503, page('39d7b3e'));
+    try {
+      const cli = fileURLToPath(new URL('../scripts/probe.mjs', import.meta.url));
+      // spawn, not spawnSync: the local server runs in this process and must keep answering.
+      const r = await new Promise((resolve) => {
+        const child = spawn(process.execPath, [cli, at(server), '39d7b3e']);
+        let out = '';
+        child.stdout.on('data', (d) => { out += d; });
+        child.on('close', (code) => resolve({ code, out }));
+      });
+      assert.equal(r.code, 1);
+      assert.match(r.out, /FAIL HTTP 503/);
+    } finally { server.close(); }
+  });
   await t.test('unreachable', async () => {
     const r = await probe('http://127.0.0.1:9/', '39d7b3e');
     assert.equal(r.ok, false);
