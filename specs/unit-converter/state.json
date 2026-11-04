@@ -35,13 +35,13 @@
     },
     "5": {
       "status": "waiting",
-      "requestedAt": "2026-11-04T09:56:13.812Z",
+      "requestedAt": "2026-11-04T09:56:52.773Z",
       "fingerprint": "453198d27820eb7b"
     }
   },
   "retries": {},
   "kinds": [],
-  "updatedAt": "2026-11-04T09:56:13.856Z",
+  "updatedAt": "2026-11-04T09:56:52.822Z",
   "intent": {
     "change": "Convert on one page",
     "smallest": "Three categories",
@@ -113,7 +113,7 @@
     "perTest": false,
     "at": "2026-11-04T09:56:08.528Z"
   },
-  "lastPacketHead": "db13dc6",
+  "lastPacketHead": "567c744",
   "ledgerIds": [
     "F1",
     "F2",
@@ -132,7 +132,7 @@
     "F15"
   ],
   "riskTier": "medium",
-  "reviewedSha": "db13dc6e016f7d6718fdfa665dc5fe79818d8c3c",
+  "reviewedSha": "567c744b4fd33fb872ba4441feb4ab349b4b67d9",
   "reviewedFiles": [
     ".ai-sdlc/config.json",
     ".ai-sdlc/trust.json",
