@@ -36,7 +36,7 @@
   },
   "retries": {},
   "kinds": [],
-  "updatedAt": "2026-11-02T14:52:16.517Z",
+  "updatedAt": "2026-11-04T09:50:55.400Z",
   "intent": {
     "change": "Convert on one page",
     "smallest": "Three categories",
@@ -53,9 +53,73 @@
       "count": 88,
       "at": "2026-11-02T14:52:14.851Z",
       "runs": 1
+    },
+    "5": {
+      "ok": true,
+      "count": 99,
+      "at": "2026-11-04T09:50:23.151Z",
+      "runs": 1
     }
   },
-  "baseline": 88,
+  "baseline": 99,
   "proofBase": "2bd0536744d522ed14ad4e7af02555439e058ea4",
-  "sizeChecked": 95
+  "sizeChecked": 95,
+  "proof": {
+    "ok": true,
+    "problems": [],
+    "base": "2bd0536",
+    "files": {
+      "test/unit-converter.page.test.mjs": "793ac55409ed1f3b",
+      "test/unit-converter.unit.test.mjs": "52f453f068f905ba",
+      "test/e2e/unit-converter.e2e.cjs": "26dacf170bcd3e2d"
+    },
+    "acs": [
+      "AC-1",
+      "AC-2",
+      "AC-3",
+      "AC-4",
+      "AC-5",
+      "AC-6",
+      "AC-7",
+      "AC-8",
+      "AC-9",
+      "AC-10",
+      "AC-11",
+      "AC-12",
+      "AC-13",
+      "AC-14",
+      "AC-15",
+      "AC-16",
+      "AC-17",
+      "AC-18",
+      "AC-19",
+      "AC-20",
+      "AC-21",
+      "AC-22",
+      "AC-23",
+      "AC-24",
+      "AC-25",
+      "AC-26",
+      "AC-27",
+      "AC-28",
+      "AC-29"
+    ],
+    "perTest": false,
+    "at": "2026-11-04T09:50:55.224Z"
+  },
+  "lastPacketHead": "39d7b3e",
+  "ledgerIds": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12"
+  ]
 }
