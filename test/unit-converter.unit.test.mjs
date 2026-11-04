@@ -31,7 +31,7 @@ const refused = (t, category, value, from, to, message) =>
     assert.equal('result' in r, false);
   });
 
-test('AC-4 Length converts between units using the international definitions', (t) => {
+test('AC-4 Length converts between units using the international definitions', async (t) => {
   const rows = [
     ['1', 'mi', 'km', '1.60934'],
     ['1', 'ft', 'cm', '30.48'],
@@ -41,10 +41,10 @@ test('AC-4 Length converts between units using the international definitions', (
     ['100', 'cm', 'm', '1'],
     ['1', 'm', 'mm', '1000'],
   ];
-  for (const [v, f, to, r] of rows) ok(t, 'length', v, f, to, r);
+  for (const [v, f, to, r] of rows) await ok(t, 'length', v, f, to, r);
 });
 
-test('AC-5 Weight converts between units using the international definitions', (t) => {
+test('AC-5 Weight converts between units using the international definitions', async (t) => {
   const rows = [
     ['1', 'kg', 'lb', '2.20462'],
     ['1', 'st', 'kg', '6.35029'],
@@ -53,10 +53,10 @@ test('AC-5 Weight converts between units using the international definitions', (
     ['1', 'g', 'mg', '1000'],
     ['1', 'st', 'lb', '14'],
   ];
-  for (const [v, f, to, r] of rows) ok(t, 'weight', v, f, to, r);
+  for (const [v, f, to, r] of rows) await ok(t, 'weight', v, f, to, r);
 });
 
-test('AC-6 Temperature converts with the Celsius, Fahrenheit and Kelvin formulas', (t) => {
+test('AC-6 Temperature converts with the Celsius, Fahrenheit and Kelvin formulas', async (t) => {
   const rows = [
     ['100', 'C', 'F', '212'],
     ['0', 'C', 'K', '273.15'],
@@ -65,10 +65,10 @@ test('AC-6 Temperature converts with the Celsius, Fahrenheit and Kelvin formulas
     ['0', 'K', 'C', '-273.15'],
     ['5', 'C', 'C', '5'],
   ];
-  for (const [v, f, to, r] of rows) ok(t, 'temperature', v, f, to, r);
+  for (const [v, f, to, r] of rows) await ok(t, 'temperature', v, f, to, r);
 });
 
-test('AC-8 Results are rounded to 6 significant digits with trailing zeros removed', (t) => {
+test('AC-8 Results are rounded to 6 significant digits with trailing zeros removed', async (t) => {
   const rows = [
     ['length', '1', 'in', 'mm', '25.4'],
     ['length', '1', 'm', 'ft', '3.28084'],
@@ -76,68 +76,68 @@ test('AC-8 Results are rounded to 6 significant digits with trailing zeros remov
     ['weight', '1', 'mg', 'st', '1.57473e-7'],
     ['length', '3', 'm', 'm', '3'],
   ];
-  for (const [c, v, f, to, r] of rows) ok(t, c, v, f, to, r);
+  for (const [c, v, f, to, r] of rows) await ok(t, c, v, f, to, r);
 });
 
-test('AC-9 Empty or whitespace-only input asks for a number', (t) => {
+test('AC-9 Empty or whitespace-only input asks for a number', async (t) => {
   for (const input of ['', '  ', '\t ']) {
-    refused(t, 'length', input, 'm', 'ft', 'Enter a number');
+    await refused(t, 'length', input, 'm', 'ft', 'Enter a number');
   }
 });
 
-test('AC-10 Input that is not a finite decimal number is refused', (t) => {
+test('AC-10 Input that is not a finite decimal number is refused', async (t) => {
   for (const v of ['abc', '12abc', '1,5', 'Infinity', 'NaN', '1.2.3', '-']) {
-    refused(t, 'length', v, 'm', 'ft', 'Enter a valid number');
+    await refused(t, 'length', v, 'm', 'ft', 'Enter a valid number');
   }
 });
 
-test('AC-11 Plain decimal forms are accepted', (t) => {
+test('AC-11 Plain decimal forms are accepted', async (t) => {
   // The feature table uses length; -3.5 would be refused as a negative length, so it runs in temperature.
-  ok(t, 'length', '12', 'm', 'm', '12');
-  ok(t, 'temperature', '-3.5', 'C', 'C', '-3.5');
-  ok(t, 'length', '.5', 'm', 'm', '0.5');
-  ok(t, 'length', '1e3', 'm', 'm', '1000');
+  await ok(t, 'length', '12', 'm', 'm', '12');
+  await ok(t, 'temperature', '-3.5', 'C', 'C', '-3.5');
+  await ok(t, 'length', '.5', 'm', 'm', '0.5');
+  await ok(t, 'length', '1e3', 'm', 'm', '1000');
 });
 
-test('AC-12 Negative length and weight are refused', (t) => {
+test('AC-12 Negative length and weight are refused', async (t) => {
   const rows = [
     ['length', '-1', 'm', 'ft'],
     ['length', '-0.001', 'km', 'mi'],
     ['weight', '-1', 'kg', 'lb'],
     ['weight', '-5', 'st', 'g'],
   ];
-  for (const [c, v, f, to] of rows) refused(t, c, v, f, to, 'Length and weight cannot be negative');
+  for (const [c, v, f, to] of rows) await refused(t, c, v, f, to, 'Length and weight cannot be negative');
 });
 
-test('AC-13 Zero length and weight convert to zero', (t) => {
+test('AC-13 Zero length and weight convert to zero', async (t) => {
   for (const [c, f, to] of [['length', 'm', 'ft'], ['weight', 'kg', 'lb']]) {
-    ok(t, c, '0', f, to, '0');
+    await ok(t, c, '0', f, to, '0');
   }
 });
 
-test('AC-14 A temperature below absolute zero is refused', (t) => {
+test('AC-14 A temperature below absolute zero is refused', async (t) => {
   for (const [v, f] of [['-0.01', 'K'], ['-273.16', 'C'], ['-459.68', 'F'], ['-500', 'C']]) {
-    refused(t, 'temperature', v, f, 'C', 'Below absolute zero');
+    await refused(t, 'temperature', v, f, 'C', 'Below absolute zero');
   }
 });
 
-test('AC-15 Exactly absolute zero converts', (t) => {
+test('AC-15 Exactly absolute zero converts', async (t) => {
   const rows = [
     ['0', 'K', 'C', '-273.15'],
     ['-273.15', 'C', 'K', '0'],
     ['-459.67', 'F', 'K', '0'],
   ];
-  for (const [v, f, to, r] of rows) ok(t, 'temperature', v, f, to, r);
+  for (const [v, f, to, r] of rows) await ok(t, 'temperature', v, f, to, r);
 });
 
-test('AC-16 An input above 1e15 in absolute value is refused as too large', (t) => {
+test('AC-16 An input above 1e15 in absolute value is refused as too large', async (t) => {
   const rows = [
     ['length', '1000000000000001', 'm', 'ft'],
     ['length', '1e16', 'km', 'mi'],
     ['weight', '2e15', 'kg', 'lb'],
     ['temperature', '-2e15', 'C', 'F'],
   ];
-  for (const [c, v, f, to] of rows) refused(t, c, v, f, to, 'Number too large');
+  for (const [c, v, f, to] of rows) await refused(t, c, v, f, to, 'Number too large');
 });
 
 test('AC-17 An input of exactly 1e15 is accepted', () => {

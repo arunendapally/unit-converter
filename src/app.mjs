@@ -10,7 +10,9 @@ function update() {
   $('result').textContent = r.message ?? `${r.result} ${$('to').value}`;
 }
 
-$('category').addEventListener('change', () => {
+// 'input' fires before 'change' and before the document listener below, so the unit lists match the
+// category before update() runs (with 'change', update() ran once with the old units and threw).
+$('category').addEventListener('input', () => {
   const units = UNITS[$('category').value];
   fill('from', units, units[0]);
   fill('to', units, units[1]);
