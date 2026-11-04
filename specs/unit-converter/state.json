@@ -36,7 +36,7 @@
   },
   "retries": {},
   "kinds": [],
-  "updatedAt": "2026-11-04T09:50:55.400Z",
+  "updatedAt": "2026-11-04T09:53:24.662Z",
   "intent": {
     "change": "Convert on one page",
     "smallest": "Three categories",
@@ -56,12 +56,12 @@
     },
     "5": {
       "ok": true,
-      "count": 99,
-      "at": "2026-11-04T09:50:23.151Z",
+      "count": 106,
+      "at": "2026-11-04T09:52:13.059Z",
       "runs": 1
     }
   },
-  "baseline": 99,
+  "baseline": 106,
   "proofBase": "2bd0536744d522ed14ad4e7af02555439e058ea4",
   "sizeChecked": 95,
   "proof": {
@@ -71,7 +71,8 @@
     "files": {
       "test/unit-converter.page.test.mjs": "793ac55409ed1f3b",
       "test/unit-converter.unit.test.mjs": "52f453f068f905ba",
-      "test/e2e/unit-converter.e2e.cjs": "26dacf170bcd3e2d"
+      "test/e2e/unit-converter.e2e.cjs": "26dacf170bcd3e2d",
+      "test/unit-converter.probe.test.mjs": "f39acf69d0f53c05"
     },
     "acs": [
       "AC-1",
@@ -105,9 +106,9 @@
       "AC-29"
     ],
     "perTest": false,
-    "at": "2026-11-04T09:50:55.224Z"
+    "at": "2026-11-04T09:53:24.651Z"
   },
-  "lastPacketHead": "39d7b3e",
+  "lastPacketHead": "3ce6c63",
   "ledgerIds": [
     "F1",
     "F2",
@@ -121,5 +122,14 @@
     "F10",
     "F11",
     "F12"
-  ]
+  ],
+  "riskTier": "medium",
+  "lastRefusal": {
+    "stage": 5,
+    "at": "2026-11-04T09:51:33.872Z",
+    "reasons": [
+      "test matrix: AC-21 has no test: name a test after it (\"AC-21 The live page responds and carries the deployed commit sha\") in a file that names unit-converter",
+      "test matrix: AC-29 has no test: name a test after it (\"AC-29 The scheduled probe fails visibly when the page is unhealthy\") in a file that names unit-converter"
+    ]
+  }
 }
