@@ -1,0 +1,9 @@
+{
+  "name": "unit-converter",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "gate": "node --test test/*.test.mjs",
+    "test:unit": "node --test test/*.test.mjs"
+  }
+}
